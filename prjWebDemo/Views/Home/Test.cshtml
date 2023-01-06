@@ -1,0 +1,12 @@
+﻿@model IEnumerable<prjWebDemo.Models.Member>
+@{
+    ViewData["Title"] = "Test";
+}
+
+<h1>Test</h1>
+<ul>
+    @foreach (var member in Model)
+    {
+        <li>@member.Name</li>
+    }
+</ul>
