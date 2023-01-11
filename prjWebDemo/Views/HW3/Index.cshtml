@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>地區下拉式選單</h1>
+
+<select id="select1"></select>
+<select id="select2"></select>
+<select id="select3"></select>
+
+@section Scripts{
+    <script>
+        var selCity = document.querySelector('#select1');
+        var selSite = document.querySelector('#select2');
+        var selRoad = document.querySelector('#select3');
+
+        selCity.addEventListener('change',()=>{ loadSite() });
+        selSite.addEventListener('change', () => { loadRoad() });
+
+        loadCity();
+
+        async function loadCity(){
+
+            var response = await fetch("@Url.Content("~/home/city")");
+
+            var data = await response.json();
+
+       
+            var cityOpts = data.map(value => `<option value=${value}>${value}</option>`);
+
+            selCity.innerHTML = cityOpts.join("");
+
+            loadSite();
+
+        }
+
+        async function loadSite(){
+            var city = selCity.options[selCity.selectedIndex].value;
+
+            var response = await fetch(`@Url.Content("~/home/site?city=${city}")`);
+            var data = await response.json();
+
+            var siteOpts = data.map(value => `<option value=${value}>${value}</option>`);
+            selSite.innerHTML = siteOpts.join("");
+
+            loadRoad();
+            
+        }
+
+        async function loadRoad(){
+            var site = selSite.options[selSite.selectedIndex].value;
+
+            var response = await fetch(`@Url.Content("~/home/road?site=${site}")`);
+            var data = await response.json();
+
+            var roadOpts = data.map(value => `<option value=${value}>${value}</option>`);
+            selRoad.innerHTML = roadOpts.join("");
+
+
+        }
+
+
+    </script>
+}

@@ -24,51 +24,28 @@ namespace prjWebDemo.Controllers
             return View();
         }
 
-       
-
-        public IActionResult CheckAccount(string name)
+        public IActionResult City()
         {
-            //
-            var exists = _contxt.Members.Any(m => m.Name == name);
-
-            return Content(exists.ToString(), "text/palin");
+            var cities = _contxt.Addresses.Select(c => c.City).Distinct();
+            return Json(cities);
         }
 
-        public IActionResult Register(Member member, IFormFile photo)
+        public IActionResult Site(string city)
         {
-
-            string fileName = photo.FileName;
-            string filePath = Path.Combine(_host.WebRootPath, "uploads", fileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                photo.CopyTo(fileStream);
-            }
+            var sites = _contxt.Addresses.Where(s => s.City == city).Select(s => s.SiteId).Distinct();
 
 
-            member.FileName = fileName;
-
-            byte[]? imgByte = null;
-            using (var memoryStream = new MemoryStream())
-            {
-                photo.CopyTo(memoryStream);
-                imgByte = memoryStream.ToArray();
-            }
-            member.FileData = imgByte;
-
-
-            _contxt.Members.Add(member);
-            _contxt.SaveChanges();
-
-
-
-            return Content($"{filePath}");
-
-
+            return Json(sites);
 
         }
+        public IActionResult Road(string site)
+        {
+            var roads = _contxt.Addresses.Where(s => s.SiteId == site).Select(s => s.Road).Distinct();
 
 
+            return Json(roads);
+
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
