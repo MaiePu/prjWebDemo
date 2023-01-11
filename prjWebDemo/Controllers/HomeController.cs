@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using prjWebDemo.Models;
 using System.Diagnostics;
 
@@ -6,13 +7,16 @@ namespace prjWebDemo.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly DemoContext _conetxt;
 
-        public HomeController(ILogger<HomeController> logger, DemoContext conetxt)
+        private readonly DemoContext _contxt;
+        private readonly IWebHostEnvironment _host;
+
+
+        public HomeController( DemoContext contxt, IWebHostEnvironment host)
         {
-            _logger = logger;
-            _conetxt = conetxt;
+
+            _contxt = contxt;
+            _host = host;
         }
 
         public IActionResult Index()
@@ -20,19 +24,48 @@ namespace prjWebDemo.Controllers
             return View();
         }
 
-        public IActionResult Test()
+       
+
+        public IActionResult CheckAccount(string name)
         {
-            var members = _conetxt.Members;
-            return View(members);
+            //
+            var exists = _contxt.Members.Any(m => m.Name == name);
+
+            return Content(exists.ToString(), "text/palin");
         }
 
-        public IActionResult FirstVick()
+        public IActionResult Register(Member member, IFormFile photo)
         {
-            return View();
-        }
-        public IActionResult Privacy()
-        {
-            return View();
+
+            string fileName = photo.FileName;
+            string filePath = Path.Combine(_host.WebRootPath, "uploads", fileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                photo.CopyTo(fileStream);
+            }
+
+
+            member.FileName = fileName;
+
+            byte[]? imgByte = null;
+            using (var memoryStream = new MemoryStream())
+            {
+                photo.CopyTo(memoryStream);
+                imgByte = memoryStream.ToArray();
+            }
+            member.FileData = imgByte;
+
+
+            _contxt.Members.Add(member);
+            _contxt.SaveChanges();
+
+
+
+            return Content($"{filePath}");
+
+
+
         }
 
 

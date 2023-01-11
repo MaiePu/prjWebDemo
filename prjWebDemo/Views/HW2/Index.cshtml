@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>名子檢查</h1>
+
+
+
+<input type="text" id="txt1" /><span id="result"></span>
+<button class="btn btn-primary" id="btn1">Click</button>
+<div id="div1" class="alert-info mt-3 p-3 w-25"></div>
+
+@section Scripts{
+    <script>
+        const btn = document.querySelector('#btn1');
+        const txt = document.querySelector('#txt1');
+        const thediv = document.querySelector('#div1')
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.addEventListener('load', () => {
+            var data = xhr.responseText;
+            thediv.innerHTML = `${data}`
+
+        })
+
+        btn.addEventListener('click', () => {
+            xhr.open("GET", `/HW2/check?name=${txt.value}`)
+            xhr.send();
+        })
+
+
+    </script>
+}

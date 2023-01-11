@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+@section Css{
+    <style>
+        .display {
+            display: flex;
+            flex-wrap: wrap;
+            box-sizing: border-box;
+            padding: 15px;
+        }
+
+    </style>
+}
+    <h1>桃園觀光景點</h1>
+    <div id="div1" class="display"></div>
+
+    @section Scripts{
+    <script src="~/js/travel.js"></script>
+    <script>
+        const theDiv = document.querySelector('#div1');
+        let add = "";
+
+        for (let i = 0, max = DATAS.length; i < max; i++) {
+            add += `<div class="card" style="width: 18rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">${DATAS[i].Name}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">${DATAS[i].Add}</h6>
+                            <p class="card-text">${DATAS[i].Toldescribe}</p>
+                            <a href="${DATAS[i].TYWebsite}" class="card-link">政府網站</a>
+                            <a href="${DATAS[i].Website}" class="card-link">商家網站</a>
+                  </div>
+                </div>`;
+        }
+        theDiv.innerHTML = add;
+
+
+    </script>
+
+
+}
